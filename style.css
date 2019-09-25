@@ -1,0 +1,168 @@
+body {
+  font-family: 'IBM Plex Sans', Helvetica, Arial, sans-serif;
+  margin: 0;
+}
+
+h1 {
+  margin-left: 25px;
+  font-size: 3em;
+  font-weight: 100;
+  margin-bottom: 0;
+}
+
+h2.steps {
+  margin-left: 25px;
+}
+
+p {
+
+}
+
+img {
+  max-width: 100%;
+}
+
+code {
+  font-family: 'IBM Plex Mono', monospace;
+  padding: 2px 10px;
+  background-color: #F2F4F8;
+}
+
+pre {
+  background-color: #F2F4F8;
+  font-family: 'IBM Plex Mono', monospace;
+  padding: 20px;
+  white-space: pre-line;
+}
+
+.write-up {
+  float: left;
+  margin: 25px;
+  max-width: 704px;
+  margin-top: 0;
+}
+
+.dice-container {
+  float:left;
+  width: 100%;
+}
+
+.dice-button {
+  width: 200px;
+  position: relative;
+  height: 80px;
+  float: left;
+  margin: 25px;
+  background-image: linear-gradient(to right, #0048DD, #7E2ECC);
+  color: white;
+}
+
+.dice-button:focus {
+  outline:0;
+}
+
+
+.roller {
+  width: 200px;
+  position: relative;
+  height: 50px;
+  float: left;
+  margin: 25px;
+  background-color: #0062FF;
+  color: white;
+  text-align: left;
+  padding: 0 20px;
+}
+
+.roll-container {
+  width:100%;
+  float:left;
+}
+
+.intro-text {
+  width:100%;
+}
+
+
+.dice {
+  width: 104px;
+  position: absolute;
+  top: -10px;
+  left: 100px;
+}
+.dice-text {
+  float: left;
+  margin: 20px;
+}
+
+.spacer {
+  position: relative;
+  width: 100%;
+  float: left;
+  height: 104px;
+}
+
+.result-container {
+  position: fixed;
+  width: 90%;
+  background: white;
+  left: 0;
+  padding: 0 5% 0 5%;
+  bottom: 0;
+  border-top: 1px solid black;
+  height: 85px;
+}
+
+#result {
+  font-size: 64px;
+  position: relative;
+  float: right;
+  display: block;
+  font-weight: 100;
+}
+.result-text {
+  position: relative;
+  float: left;
+  display: block;
+  height: 80px;
+  line-height: 80px;
+  text-align: center;
+}
+
+.inactive {
+  opacity: 0.5;
+}
+
+span.reset {
+  margin: 40px 5px;
+  float: left;
+  cursor: pointer;
+  color: blue;
+}
+
+#loader {
+  float:right;
+  padding-top: 38px;
+  display: none;
+  width:100px;
+}
+
+@media (max-width: 600px) {
+  .dice {
+    width: 104px;
+    position: absolute;
+    top: -10px;
+    left: 60px;
+  }
+
+  .dice-button {
+    width: 150px;
+    position: relative;
+    height: 80px;
+    float: left;
+    margin: 25px;
+    background-image: linear-gradient(to right, #0048DD, #7E2ECC);
+    color: white;
+    margin: 18px;
+  }
+}

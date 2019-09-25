@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Truely quantum dice</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script type="text/javascript" src="corpus.js"></script>
+    <script type="text/javascript" src="function.js"></script>
+    <link href="https://fonts.googleapis.com/css?family=IBM+Plex+Mono|IBM+Plex+Sans&display=swap" rel="stylesheet">
+  </head>
+  <body>
+    <!-- <div class="intro-text"> -->
+      <h1>Truely Quantum Dice</h1>
+      <h2 class="steps">Step 1: Choose a dice to roll</h2>
+    <!-- </div> -->
+
+    <div class="dice-container">
+
+       <button class="dice-button" id="1" onclick="rollDice(this.id, 4)">
+         <span class="dice-text">D4</span>
+         <img class="dice" src="assets/d4.png" alt="">
+       </button>
+       <button class="dice-button" id="2" onclick="rollDice(this.id, 6)">
+         <span class="dice-text">D6</span>
+         <img class="dice" src="assets/d6.png" alt="">
+       </button>
+       <button class="dice-button" id="3" onclick="rollDice(this.id, 8)">
+         <span class="dice-text">D8</span>
+         <img class="dice" src="assets/d8.png" alt="">
+       </button>
+       <button class="dice-button" id="4" onclick="rollDice(this.id, 10)">
+         <span class="dice-text">D10</span>
+         <img class="dice" src="assets/d10.png" alt="">
+       </button>
+       <button class="dice-button" id="5" onclick="rollDice(this.id, 12)">
+         <span class="dice-text">D12</span>
+         <img class="dice" src="assets/d12.png" alt="">
+       </button>
+       <button class="dice-button" id="6" onclick="rollDice(this.id, 20)">
+         <span class="dice-text">D20</span>
+         <img class="dice" src="assets/d20.png" alt="">
+       </button>
+       <!-- <button class="dice-button" onclick="rollDice(32)">
+         <span class="dice-text">D32</span>
+         <img class="dice" src="assets/d32.png" alt="">
+       </button> -->
+
+     </div>
+     <div class="roll-container">
+       <h2 class="steps">Step 2: Roll the dice</h2>
+       <button class="roller" type="button" name="button" onclick="roll()">Roll dice</button> <span class="reset" onclick="resetDice()">Reset</span>
+     </div>
+     <div class="spacer"></div>
+     <h1>How it works</h1>
+     <div class="write-up">
+       <p>Is a dungeons and dragons style dice roller a good use of a quantum computer? I sure think so.</p>
+       <h2>Before we begin.</h2>
+       <p>Although I work for the IBM Q team, and I know a tiny bit about quantum computing, its worth noting that this project was done in my spare time for fun and does not reflect the thoughts or opinions of IBM, or IBM Q. I started this project in effort better understand Qiskit and therefore to better understand our user base. If you want to read the real robust research that is happening in IBM Q, then <a target="_blank" href="https://quantum-computing.ibm.com/jupyter/tutorial/1_start_here.ipynb">click here</a>. However, I don't have a background in linear algebra or quantum physics, but wanted to meaningfully play with the real quantum systems that are free to use on the cloud. If that sounds like something you would like to do too, then read on!</p>
+       <h2>Project Summary</h2>
+       <p>Computers as we know them (aka classical computers) can, at best, generate pseudo random numbers. Quantum computers, using uniquely quantum properties, can generate truly random numbers. This project uses random numbers generated from IBM Q's quantum systems to provide a random sequence for a small dice rolling app. While this project leverages IBM Q's real quantum systems, as opposed to a simulator, it has its own host of obstacles, which will be outlined below. But lets start with how we get these naturally random numbers.</p>
+
+       <p>To get information from a quantum computer, we need a quantum circuit. To get random numbers, we need this circuit.</p>
+       <img src="assets/circuit.png" alt="quantum circuit diagram">
+       <h2>Simple explanation</h2>
+       <p>This circuit uses 5 qubits, each represented by the horizontal line above. We drop gates (shown as little squares) onto a qubit to manipulate it. We want to add gates that will help give us a random number.</p>
+       <p>A hadamard gate (or H gate) is dropped on each qubit. The H gate sets that qubit into a superposition state of 0 and 1. A measurement gate is then applied to each qubit. We extract the information from the qubit by measuring it, which results in the state collapsing down to either a 0 or 1 (as opposed to something in between). Because of the H gate, there is a 50% chance of getting a 0, and a 50% of getting a 1. When all 5 qubits are measured, we will get a result that looks something like 10110.</p>
+       <p>Or 11101.</p>
+       <p>Or 00101.</p>
+       <p>Or any 5 bit combination of 0s and 1s </p>
+       <p>Because all qubits had an equal chance of being 0 or 1, the output had an equal chance of being anything between 00000 and 11111.</p>
+       <p>We can use Python to convert those binary numbers to decimals from 0 to 31 (for those curious about binary conversion, read <a target="_blank" href="https://en.wikipedia.org/wiki/Binary_number#Counting_in_binary">here</a>). Because there is an equal chance of getting any of those numbers, we can safely call this circuit a random number generator for values between 0 and 31. Yay! The hard part is over. Now lets put those random numbers to work. </p>
+       <h2>Wait, how random is a quantum computer really?</h2>
+       <p>Quantum computers aren't perfect yet, but they are still really good at giving random results. Ideally, there is an equal probability of getting any value between 0-31 (for our 5 qubit system). The histogram below shows the true probabilities from the system "ibmq_ourense", which is the system I used for this experiment.</p>
+       <img src="assets/probabilities.png" alt="output prability image">
+       <p>It's pretty close to a uniform distribution, but not perfect. Some of the imperfection is due to sources of noise--such as errors in measurement--and some of it is due to the number of times we rolled the dice. The lower the noise and the more rolls we make, the closer the observed distribution will be to uniform.</p>
+       <h2>Wait one more time, am I really pinging a quantum computer every time I roll the dice on this app? </h2>
+       <p>Not exactly. We have a handful of quantum systems that can be accessed for free, but time is shared among all free users. Instead of writing the app so that it pings the system and requires about 10 minutes of waiting after every roll, the app pulls from cached results so you can have your result instantly. I ran the above circuit several thousand times and stored the results in the app. So is the sequence truly random? Yes, unless you do more than 4000ish dice rolls. We'll talk more about experiment limitations later.</p>
+       <p>Okay, onward to how this thing works!</p>
+       <h2>Detailed explanation. Lets see some code!</h2>
+       <p>As explained above, we create a 5 qubit circuit that uses superposition to generate our random numbers. That qiskit code looks like this.</p>
+       <pre>
+          qc = QuantumCircuit(5, 5)
+          qc.h(0)
+          qc.h(1)
+          qc.h(2)
+          qc.h(3)
+          qc.h(4)
+          qc.measure([0, 1, 2, 3, 4], [0, 1, 2, 3, 4])
+        </pre>
+        <p>If the above circuit is sent to a quantum system, we will get a random binary string between 00000 and 11111. Because of the limitations mentioned above, we are going to run the circuit thousands of times and store the results independently so that we can reference them later when a dice gets rolled. </p>
+
+        <pre>
+          # decide on a system and how many times to send the circuit
+          backend = provider.get_backend('ibmq_ourense')
+          shots = 4096
+          job = execute(qc, backend, shots=shots, memory=True)
+
+
+          #we want to see results independently, instead of as a probability
+          result = job.result()
+          memory = result.get_memory()
+
+
+          # need an array to drop all the results into
+          outputArray = []
+
+
+          #convert results to decimal and drop into array
+          for x in range(0, shots):
+              converted = int(memory[x], 2)
+              outputArray.append(converted)
+        </pre>
+        <p>Note that not all available backends will let you store the results independently, which is specified by "memory" above.</p>
+        <p>That's it for getting a truly random sequence from our quantum system. Next, let's look at building a simple web app around the results.</p>
+        <h2>Turning Quantum results into an app</h2>
+        <p>The random numbers that are stored in <code>outputArray</code> are copied over to my javascript app and stored in an array called <code>diceCorpus</code>. Instead of always starting at the beginning of the array, we are going to have the app start at a pseudorandom index (ugh, classical computers, am I right?).</p>
+
+        <pre>var index = Math.floor(Math.random() * diceCorpus.length);</pre>
+        <p>When someone rolls a dice, we need to normalize our or array of random numbers. Technically speaking, its the sequence that is random, not the numbers. Once normalized, we'll multiply the value by the size of the dice and round our up (most dice don't include decimal places. Ours won't either). We also add a "plus 1" because we don't want our dice to roll a zero.</p>
+
+        <pre>var normalizedRoll = (diceCorpus[index] + 1)/maxDiceRoll
+        result = Math.ceil(normalizedRoll * diceSize);</pre>
+        <p>In this case <code>maxDiceRoll</code> is 32, because 5 bits has a max of 32.</p>
+        <p>After a dice roll, we want to move to the next value in our sequence for the next roll. If we have reached the end of the sequence, go back to the beginning.</p>
+        <pre>if (index < diceCorpus.length-1) {
+              index ++;
+        } else {
+            index = 0;
+        }</pre>
+        <p>The last step is returning the value to the user. I won't get too much into that here, but I'm using</p>
+        <pre>document.getElementById("result").innerHTML = result;</pre>
+        <p>And that's basically it! You too can now make quantum dice app.</p>
+
+        <h2>Limitations of this experiment</h2>
+        <p>The biggest road block to overcome in this experiment is how the quantum system is queried. It still amazes me that real quantum systems can be accessed and used via the web for free. It means non-experts like me can start testing it out and do silly things like make a dice rolling app. But, it also means that everyone has to wait their turn to use the same quantum systems. If this app pinged the quantum hardware every time a user rolls a dice, they would be waiting probably several minutes before getting their results.  To overcome this, the app uses a cache of several thousand random numbers previously generated from the quantum computer. One could argue this takes away from the randomness because truly random numbers are being stored and reused. But I think this option is better than waiting 10 minutes every time you want to roll a dice. It also means that every instance of the app uses the same sequence. In order for the results to be different on each roll, the starting point is decided using javascript's pseudorandom function. This leaves the question of whether or not starting at a pseudorandom position in a random sequence breaks the randomness. Truth is, I have no idea. But its the best I could think up.</p>
+
+        <p>Other than that, the issues are with scale. After around 4000 rolls, the sequence repeats. So if you roll the same dice over 4000 times, the pattern repeats and thus is no longer random. Also, because the circuit uses only 5 qubits, the app doesn't support a die larger than 32 sides. This is hardly an issue, but worth noting. Lastly, as noted above, quantum computers aren't perfect yet, and the probability distribution isn't exactly even, so some numbers might occur slightly more often, which would be more evident on larger dice. But for your average D&D player, this shouldn't be an issue. Its also worth noting that not even physical dice are free of imperfections and are therefore not perfectly random either. If you find yourself in need of a d20 and no dice laying around, this app should be effective enough to count as a replacement for a night's campaign.</p>
+        <p>Thanks for reading! I hope you had fun and learned something along the way.</p>
+
+
+     </div>
+
+     <div class="spacer"></div>
+
+     <div class="result-container">
+      <span class="result-text">Dice result is : </span>
+      <img id="loader" src="assets/loader.gif" alt="">
+      <span id="result">---</span>
+     </div>
+  </body>
+  <link rel="stylesheet" type="text/css" href="style.css">
+</html>
